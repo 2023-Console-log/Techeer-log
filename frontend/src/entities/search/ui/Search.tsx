@@ -51,8 +51,8 @@ export function Search({ setResult }: any) {
       return response;
     },
     onSuccess: (data) => {
-      setResult(data);
       if (searchQuery !== '') {
+        setResult(data);
         const recentSearches = JSON.parse(localStorage.getItem('recentSearches') || '[]');
         const updatedSearches = [searchQuery, ...recentSearches.filter((item: string) => item !== searchQuery)];
         localStorage.setItem('recentSearches', JSON.stringify(updatedSearches));

@@ -7,7 +7,6 @@ import { ProjectTabs } from '../../entities/ProjectTabs/ui/ProjectTabs.tsx';
 import ListToggle from '../../shared/ui/ListToggle.tsx';
 import { useLocation } from 'react-router';
 
-
 export const ProjectPage = () => {
   const [selectedType, setSelectedType] = useState<string>('부트캠프');
   const [selectedYear, setSelectedYear] = useState<string>('진행 연도');
@@ -22,7 +21,7 @@ export const ProjectPage = () => {
   //검색 기능 자동 스크롤
   const queryParams = new URLSearchParams(location.search);
   const searchQuery = queryParams.get('search') || '';
-  const [setResult] = useState<any>([]);
+  const [_, setResult] = useState<any>([]);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const { pathname } = useLocation();
 

@@ -5,7 +5,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 const SIZE_PER_PAGE = 20; //페이지당 불러올 게시글 개수
 
 export const useGetProjectQuery = (result: string) => {
-  const { data, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage } = useInfiniteQuery<Project[]>({
+  const { data, isFetching, hasNextPage, fetchNextPage, isFetchingNextPage, isLoading } = useInfiniteQuery<Project[]>({
     queryKey: ['projectList'],
     queryFn: ({ pageParam }) => getProjectList({ pageStart: pageParam, size: SIZE_PER_PAGE, keyword: result }),
     initialPageParam: 0,
@@ -20,5 +20,5 @@ export const useGetProjectQuery = (result: string) => {
     refetchOnWindowFocus: false,
   });
 
-  return { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage };
+  return { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage, isLoading };
 };

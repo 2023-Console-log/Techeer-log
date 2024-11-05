@@ -22,7 +22,7 @@ const filterOptions: Record<string, string> = {
 };
 //프로젝트 가져온 후 필터링
 const useProjects = ({ selectedType, selectedYear, selectedPeriod, result }: ProjectListProps) => {
-  const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } = useGetProjectQuery(result);
+  const { data, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage, isLoading } = useGetProjectQuery(result);
   const projects = data?.pages.flat() ?? [];
   const filteredProjects = useMemo(() => {
     let p = [...projects];
@@ -52,10 +52,11 @@ const useProjects = ({ selectedType, selectedYear, selectedPeriod, result }: Pro
     isFetching,
     isFetchingNextPage,
     fetchNextPage,
+    isLoading,
   };
 };
 export const ProjectList = ({ selectedType, selectedYear, selectedPeriod, alignment, result }: ProjectListProps) => {
-  const { projects, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage } = useProjects({
+  const { projects, hasNextPage, isFetching, isFetchingNextPage, fetchNextPage, isLoading } = useProjects({
     selectedType,
     selectedYear,
     selectedPeriod,
@@ -68,7 +69,7 @@ export const ProjectList = ({ selectedType, selectedYear, selectedPeriod, alignm
       fetchNextPage();
     }
   }, [hasNextPage, fetchNextPage, inView]);
-  if (isFetching && !isFetchingNextPage) {
+  if (isLoading && isFetching && !isFetchingNextPage) {
     return (
       <div className="grid grid-cols-3 grid-rows-3 gap-4 m-4">
         {[...Array(9)].map((_, index) => (

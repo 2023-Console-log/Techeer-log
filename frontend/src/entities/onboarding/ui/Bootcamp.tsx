@@ -1,14 +1,19 @@
 import arrow from '../image/arrow.png';
 import object from '../image/object.png';
 import iconPoint from '../../../shared/assets/image/mainImg/Icon-Point.png';
-import { EmblaCarousel } from '../../../entities/carousel';
-import { useEffect, useRef } from 'react';
+//import { EmblaCarousel } from '../../../entities/carousel';
+import React, { Suspense, useEffect, useRef } from 'react';
 import { EmblaOptionsType } from 'embla-carousel';
 import { prizeDate } from '../../../shared/types/prizeDate';
 import useScrollCount from '../hook/useScrollHook';
 // import useScrollFadeIn from '../hook/useScrollFadIn';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+const EmblaCarousel = React.lazy(() =>
+  import('../../../entities/carousel/ui/Carousel.tsx').then((module) => ({
+    default: module.EmblaCarousel,
+  })),
+);
 
 export default function Bootcamp() {
   const OPTIONS: EmblaOptionsType = { loop: true };
@@ -153,7 +158,9 @@ export default function Bootcamp() {
           </span>
         </div>
         <div className="overflow-x-hidden w-[98%] mx-auto mb-[6.25rem]">
-          <EmblaCarousel options={OPTIONS} date={data} />
+          <Suspense fallback={<div>Loading...</div>}>
+            <EmblaCarousel options={OPTIONS} date={data} />
+          </Suspense>
           <div ref={scrollRef}></div>
         </div>
       </div>
