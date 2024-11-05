@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 import { ProjectType } from '../types/projectStore.ts';
 
 const initialState = {
@@ -148,9 +148,13 @@ const useStore = create<ProjectType>((set) => ({
 
       frameworkResponseList: data.frameworkResponseList || [],
       frontframeworkRequestList:
-        data.frameworkResponseList.filter((framework) => framework.frameworkTypeEnum === 'FRONTEND').map((item) => item.name) || [],
+        data.frameworkResponseList
+          .filter((framework) => framework.frameworkTypeEnum === 'FRONTEND')
+          .map((item) => item.name) || [],
       backframeworkRequestList:
-        data.frameworkResponseList.filter((framework) => framework.frameworkTypeEnum === 'BACKEND').map((item) => item.name) || [],
+        data.frameworkResponseList
+          .filter((framework) => framework.frameworkTypeEnum === 'BACKEND')
+          .map((item) => item.name) || [],
     }),
 
   resetStore: () =>
