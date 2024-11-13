@@ -16,7 +16,7 @@ public enum ResultCode {
 
     // Member
     SIGNUP_SUCCESS("M001", 201, "회원가입 성공"),
-    FIND_PROFILE_SUCCESS("MOO2", 200, "프로필 조회 성공"),
+    FIND_PROFILE_SUCCESS("M002", 200, "프로필 조회 성공"),
     EDIT_PROFILE_SUCCESS("M003", 201, "프로필 변경 성공"),
     UPDATE_PASSWORD_SUCCESS("M004", 201, "비밀번호 변경 성공"),
 
