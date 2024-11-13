@@ -7,10 +7,7 @@ import com.techeerlog.global.response.ResultResponse;
 import com.techeerlog.global.response.SimpleResultResponse;
 import com.techeerlog.global.support.token.Login;
 import com.techeerlog.member.domain.Member;
-import com.techeerlog.member.dto.EditMemberRequest;
-import com.techeerlog.member.dto.MemberResponse;
-import com.techeerlog.member.dto.ProfileResponse;
-import com.techeerlog.member.dto.SignupRequest;
+import com.techeerlog.member.dto.*;
 import com.techeerlog.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -82,6 +79,18 @@ public class MemberController {
         SimpleResultResponse resultResponse = new SimpleResultResponse(EDIT_PROFILE_SUCCESS);
 
         return ResponseEntity.status(EDIT_PROFILE_SUCCESS.getStatus())
+                .body(resultResponse);
+    }
+
+    @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 기능")
+    @PatchMapping("/password")
+    public ResponseEntity<SimpleResultResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest,
+                                                                          @Login AuthInfo authInfo) {
+        memberService.updatePassword(authInfo, updatePasswordRequest);
+
+        SimpleResultResponse resultResponse = new SimpleResultResponse(UPDATE_PASSWORD_SUCCESS);
+
+        return ResponseEntity.status(UPDATE_PASSWORD_SUCCESS.getStatus())
                 .body(resultResponse);
     }
 }
