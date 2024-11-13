@@ -2,7 +2,6 @@ package com.techeerlog.dummy.service;
 
 import com.techeerlog.comment.domain.Comment;
 import com.techeerlog.comment.repository.CommentRepository;
-import com.techeerlog.framework.repository.FrameworkRepository;
 import com.techeerlog.member.domain.LoginId;
 import com.techeerlog.member.domain.Member;
 import com.techeerlog.member.domain.Nickname;
@@ -17,9 +16,7 @@ import net.datafaker.Faker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.sound.sampled.Port;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -29,7 +26,6 @@ import java.util.stream.Stream;
 public class DummyService {
     private final MemberRepository memberRepository;
     private final ProjectRepository projectRepository;
-    private final FrameworkRepository frameworkRepository;
     private final CommentRepository commentRepository;
     private List<Member> members;
 
@@ -73,8 +69,8 @@ public class DummyService {
         }
 
         return Stream.generate(() -> createDummyProject(members.get(faker.random().nextInt(members.size()))))  // Generate a random project
-                .limit(count)  // Limit the number of projects to 'count'
-                .collect(Collectors.toList());  // Collect the results into a List
+                .limit(count)
+                .collect(Collectors.toList());
     }
 
 
