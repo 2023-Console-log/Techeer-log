@@ -35,6 +35,7 @@ public class WebMvcDevConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor)
                 .addPathPatterns("/**")
                 .excludePathPatterns("/api/v1/auth/anonymous")
+                .excludePathPatterns("/api/dummy")
                 .excludePathPatterns("/api/v1/enums")
                 .excludePathPatterns("/api/v1/health")
                 .excludePathPatterns("/swagger-ui.html", "/swagger-ui/**", "/api/v3/api-docs/**");
