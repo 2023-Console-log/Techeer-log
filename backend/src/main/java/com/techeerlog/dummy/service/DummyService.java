@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,16 +34,15 @@ public class DummyService {
 
     @Transactional
     public void insertDummy(){
-        int count = 2;
-        members = generateDummyMembers(count);
+        members = generateDummyMembers(100);
         memberRepository.saveAll(members);
 
-        List<Project> projects = generateDummyProjects(count);
+        List<Project> projects = generateDummyProjects(1);
         projectRepository.saveAll(projects);
 
         Project project = projects.get(0);
 
-        List<Comment> comments = generateDummyComments(count, project);
+        List<Comment> comments = generateDummyComments(10000, project);
         commentRepository.saveAll(comments);
 
         project.setCommentList(comments);
@@ -97,37 +97,20 @@ public class DummyService {
     }
 
     private List<Member> generateDummyMembers(int count) {
-        return faker.collection(this::createDummyMember)
+        AtomicInteger counter = new AtomicInteger(0);
+        return faker.collection(() -> createDummyMember(counter.incrementAndGet())) // count 증가
                 .maxLen(count)
                 .generate();
     }
 
-    private Member createDummyMember() {
-        String nickName = validateNickname();
-
+    private Member createDummyMember(int count) {
         return Member.builder()
-                .loginId(new LoginId(faker.name().fullName()))
+                .loginId(new LoginId(String.valueOf(count)))
                 .password(new Password(faker.internet().password()))
-                .nickname(new Nickname(nickName))
+                .nickname(new Nickname(String.valueOf(count)))
                 .profileImageUrl(faker.internet().url())
                 .build();
     }
 
-    private String validateNickname(){
-        String nickname = null;
-
-        while (nickname == null) {
-            try {
-                nickname = faker.funnyName().name();
-                // Nickname 객체 생성 시 validate 호출
-                new Nickname(nickname); // 유효하지 않으면 InvalidNicknameException 발생
-            } catch (InvalidNicknameException e) {
-                // 유효하지 않은 닉네임은 다시 생성하도록 처리
-                nickname = null;
-            }
-        }
-
-        return nickname;
-    }
 
 }
