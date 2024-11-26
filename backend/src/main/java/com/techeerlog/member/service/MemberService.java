@@ -8,8 +8,16 @@ import com.techeerlog.member.domain.LoginId;
 import com.techeerlog.member.domain.Member;
 import com.techeerlog.member.domain.Nickname;
 import com.techeerlog.member.domain.Password;
-import com.techeerlog.member.dto.*;
-import com.techeerlog.member.exception.*;
+import com.techeerlog.member.dto.EditMemberRequest;
+import com.techeerlog.member.dto.ProfileResponse;
+import com.techeerlog.member.dto.SignupRequest;
+import com.techeerlog.member.dto.UniqueResponse;
+import com.techeerlog.member.dto.UpdatePasswordRequest;
+import com.techeerlog.member.exception.DuplicateNicknameException;
+import com.techeerlog.member.exception.IncorrectPasswordException;
+import com.techeerlog.member.exception.InvalidLoginIdException;
+import com.techeerlog.member.exception.PasswordConfirmationException;
+import com.techeerlog.member.exception.MemberNotFoundException;
 import com.techeerlog.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -86,35 +94,42 @@ public class MemberService extends BaseEntity {
     }
 
     @Transactional
-    public void edit(EditMemberRequest editMemberRequest, AuthInfo authInfo, Optional<MultipartFile> multipartFile) {
-        Member member = memberRepository.findById(authInfo.getId())
-                .orElseThrow(MemberNotFoundException::new);
+    public void editMemberInfo(EditMemberRequest editMemberRequest, AuthInfo authInfo, Optional<MultipartFile> multipartFile) {
+        Member member = findMemberById(authInfo.getId());
 
-        multipartFile.ifPresent(file -> {
-            if (!file.isEmpty()) {
-                String profileImageUrl = amazonS3Service.upload(member.getNickname(), file);
-                member.updateProfileImageUrl(profileImageUrl);
-            }
+        updateProfileImage(member, multipartFile);
 
-        });
-
-        if (editMemberRequest == null) {
-            return;
+        if (editMemberRequest != null) {
+            updateNickname(member, editMemberRequest.getNickname());
+            updateIntroduction(member, editMemberRequest.getIntroduction());
         }
+    }
 
-        // 닉네임 수정
-        if (!editMemberRequest.getNickname().isEmpty() && !editMemberRequest.getNickname().equals(member.getNickname())) {
-            Nickname validNickname = new Nickname(editMemberRequest.getNickname());
+    private Member findMemberById(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
+    private void updateProfileImage(Member member, Optional<MultipartFile> multipartFile) {
+        multipartFile.filter(file -> !file.isEmpty())
+                .ifPresent(file -> {
+                    String profileImageUrl = amazonS3Service.upload(member.getNickname(), file);
+                    member.updateProfileImageUrl(profileImageUrl);
+                });
+    }
+
+    private void updateNickname(Member member, String newNickname) {
+        if (newNickname != null && !newNickname.isEmpty() && !newNickname.equals(member.getNickname())) {
+            Nickname validNickname = new Nickname(newNickname);
             validateUniqueNickname(validNickname);
             member.updateNickname(validNickname);
         }
+    }
 
-        // 한 줄 소개 수정
-        if (editMemberRequest.getIntroduction() != null
-                && !editMemberRequest.getIntroduction().equals(member.getIntroduction())) {
-            member.updateIntroduction(editMemberRequest.getIntroduction());
+    private void updateIntroduction(Member member, String newIntroduction) {
+        if (newIntroduction != null && !newIntroduction.equals(member.getIntroduction())) {
+            member.updateIntroduction(newIntroduction);
         }
-
     }
 
     private void validateUniqueNickname(Nickname validNickname) {
@@ -138,7 +153,7 @@ public class MemberService extends BaseEntity {
 
         // 기존 비밀번호와 요청으로 입력된 비밀번호가 일치한지 확인
         String currentPassword = updatePasswordRequest.getCurrentPassword();
-        if(!password.equals(encryptor.encrypt(currentPassword))){
+        if (!password.equals(encryptor.encrypt(currentPassword))) {
             throw new IncorrectPasswordException();
         }
 

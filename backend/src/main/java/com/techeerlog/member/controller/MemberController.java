@@ -73,7 +73,7 @@ public class MemberController {
                                                            @RequestPart(value = "part", required = false) Optional<MultipartFile> multipartFile,
                                                            @Login AuthInfo authInfo) {
 
-        memberService.edit(editMemberRequest, authInfo, multipartFile);
+        memberService.editMemberInfo(editMemberRequest, authInfo, multipartFile);
         refreshTokenService.deleteToken(authInfo.getId());
 
         SimpleResultResponse resultResponse = new SimpleResultResponse(EDIT_PROFILE_SUCCESS);
