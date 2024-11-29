@@ -32,6 +32,7 @@ public class MemberService extends BaseEntity {
     private final MemberRepository memberRepository;
     private final EncryptorI encryptor;
     private final AmazonS3Service amazonS3Service;
+    private static final String DEFAULT_PROFILE_IMAGE_URL = "https://techeer-bucket.s3.ap-northeast-2.amazonaws.com/image+(3).png";
 
     public MemberService(MemberRepository memberRepository, EncryptorI encryptor, AmazonS3Service amazonS3Service) {
         this.memberRepository = memberRepository;
@@ -42,16 +43,43 @@ public class MemberService extends BaseEntity {
     @Transactional
     public Member signUp(SignupRequest signupRequest) {
         validate(signupRequest);
-        String defaultProfileImageUrl = "https://techeer-bucket.s3.ap-northeast-2.amazonaws.com/image+(3).png";
 
         Member member = Member.builder()
                 .loginId(new LoginId(signupRequest.getLoginId()))
                 .password(Password.of(encryptor, signupRequest.getPassword()))
-                .profileImageUrl(defaultProfileImageUrl)
+                .profileImageUrl(DEFAULT_PROFILE_IMAGE_URL)
                 .nickname(new Nickname(signupRequest.getNickname()))
                 .build();
         memberRepository.save(member);
         return member;
+    }
+
+    public ProfileResponse findProfile(AuthInfo authInfo) {
+        Member member = memberRepository.findById(authInfo.getId())
+                .orElseThrow(MemberNotFoundException::new);
+        return ProfileResponse.of(member);
+    }
+
+    @Transactional
+    public void updatePassword(AuthInfo authInfo, UpdatePasswordRequest updatePasswordRequest) {
+        // 기존 비밀번호를 찾기
+        Member member = memberRepository.findById(authInfo.getId())
+                .orElseThrow(MemberNotFoundException::new);
+        String password = member.getPassword();
+
+        // 기존 비밀번호와 요청으로 입력된 비밀번호가 일치한지 확인
+        String currentPassword = updatePasswordRequest.getCurrentPassword();
+        if (!password.equals(encryptor.encrypt(currentPassword))) {
+            throw new IncorrectPasswordException();
+        }
+
+        // 일치하다면 새로운 비밀번호가 유효한지 확인
+        String newPassword = updatePasswordRequest.getNewPassword();
+//        Password.validate(newPassword);
+
+        // 비밀번호 업데이트
+        member.updatePassword(Password.of(encryptor, newPassword));
+        memberRepository.save(member);
     }
 
     public UniqueResponse checkUniqueLoginId(String loginId) {
@@ -137,34 +165,4 @@ public class MemberService extends BaseEntity {
             throw new DuplicateNicknameException();
         }
     }
-
-    public ProfileResponse findProfile(AuthInfo authInfo) {
-        Member member = memberRepository.findById(authInfo.getId())
-                .orElseThrow(MemberNotFoundException::new);
-        return ProfileResponse.of(member);
-    }
-
-    @Transactional
-    public void updatePassword(AuthInfo authInfo, UpdatePasswordRequest updatePasswordRequest) {
-        // 기존 비밀번호를 찾기
-        Member member = memberRepository.findById(authInfo.getId())
-                .orElseThrow(MemberNotFoundException::new);
-        String password = member.getPassword();
-
-        // 기존 비밀번호와 요청으로 입력된 비밀번호가 일치한지 확인
-        String currentPassword = updatePasswordRequest.getCurrentPassword();
-        if (!password.equals(encryptor.encrypt(currentPassword))) {
-            throw new IncorrectPasswordException();
-        }
-
-        // 일치하다면 새로운 비밀번호가 유효한지 확인
-        String newPassword = updatePasswordRequest.getNewPassword();
-//        Password.validate(newPassword);
-
-        // 비밀번호 업데이트
-        member.updatePassword(Password.of(encryptor, newPassword));
-        memberRepository.save(member);
-
-    }
-
 }
