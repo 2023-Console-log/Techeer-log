@@ -18,6 +18,7 @@ import com.techeerlog.member.exception.IncorrectPasswordException;
 import com.techeerlog.member.exception.InvalidLoginIdException;
 import com.techeerlog.member.exception.PasswordConfirmationException;
 import com.techeerlog.member.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,18 +27,13 @@ import java.util.Optional;
 
 @Service
 @Transactional
+@RequiredArgsConstructor
 public class MemberService extends BaseEntity {
 
     private static final String DEFAULT_PROFILE_IMAGE_URL = "https://techeer-bucket.s3.ap-northeast-2.amazonaws.com/image+(3).png";
     private final MemberRepository memberRepository;
     private final EncryptorI encryptor;
     private final AmazonS3Service amazonS3Service;
-
-    public MemberService(MemberRepository memberRepository, EncryptorI encryptor, AmazonS3Service amazonS3Service) {
-        this.memberRepository = memberRepository;
-        this.encryptor = encryptor;
-        this.amazonS3Service = amazonS3Service;
-    }
 
     @Transactional
     public Member signUp(SignupRequest signupRequest) {
