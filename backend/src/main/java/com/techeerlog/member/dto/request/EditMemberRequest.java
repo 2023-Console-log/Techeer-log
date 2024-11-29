@@ -1,4 +1,4 @@
-package com.techeerlog.member.dto;
+package com.techeerlog.member.dto.request;
 
 import lombok.Getter;
 import lombok.Setter;

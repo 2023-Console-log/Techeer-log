@@ -1,4 +1,4 @@
-package com.techeerlog.member.dto;
+package com.techeerlog.member.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

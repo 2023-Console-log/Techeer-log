@@ -8,11 +8,15 @@ import com.techeerlog.member.domain.LoginId;
 import com.techeerlog.member.domain.Member;
 import com.techeerlog.member.domain.Nickname;
 import com.techeerlog.member.domain.Password;
-import com.techeerlog.member.dto.EditMemberRequest;
-import com.techeerlog.member.dto.ProfileResponse;
-import com.techeerlog.member.dto.SignupRequest;
-import com.techeerlog.member.dto.UpdatePasswordRequest;
-import com.techeerlog.member.exception.*;
+import com.techeerlog.member.dto.request.EditMemberRequest;
+import com.techeerlog.member.dto.response.ProfileResponse;
+import com.techeerlog.member.dto.request.SignupRequest;
+import com.techeerlog.member.dto.request.UpdatePasswordRequest;
+import com.techeerlog.member.exception.MemberNotFoundException;
+import com.techeerlog.member.exception.DuplicateNicknameException;
+import com.techeerlog.member.exception.IncorrectPasswordException;
+import com.techeerlog.member.exception.InvalidLoginIdException;
+import com.techeerlog.member.exception.PasswordConfirmationException;
 import com.techeerlog.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,10 +28,10 @@ import java.util.Optional;
 @Transactional
 public class MemberService extends BaseEntity {
 
+    private static final String DEFAULT_PROFILE_IMAGE_URL = "https://techeer-bucket.s3.ap-northeast-2.amazonaws.com/image+(3).png";
     private final MemberRepository memberRepository;
     private final EncryptorI encryptor;
     private final AmazonS3Service amazonS3Service;
-    private static final String DEFAULT_PROFILE_IMAGE_URL = "https://techeer-bucket.s3.ap-northeast-2.amazonaws.com/image+(3).png";
 
     public MemberService(MemberRepository memberRepository, EncryptorI encryptor, AmazonS3Service amazonS3Service) {
         this.memberRepository = memberRepository;

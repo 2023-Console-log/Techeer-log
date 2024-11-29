@@ -7,7 +7,11 @@ import com.techeerlog.global.response.ResultResponse;
 import com.techeerlog.global.response.SimpleResultResponse;
 import com.techeerlog.global.support.token.Login;
 import com.techeerlog.member.domain.Member;
-import com.techeerlog.member.dto.*;
+import com.techeerlog.member.dto.request.EditMemberRequest;
+import com.techeerlog.member.dto.request.SignupRequest;
+import com.techeerlog.member.dto.request.UpdatePasswordRequest;
+import com.techeerlog.member.dto.response.MemberResponse;
+import com.techeerlog.member.dto.response.ProfileResponse;
 import com.techeerlog.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.http.ResponseEntity;
@@ -72,7 +76,7 @@ public class MemberController {
     @Operation(summary = "비밀번호 변경", description = "비밀번호 변경 기능")
     @PatchMapping("/password")
     public ResponseEntity<SimpleResultResponse> updatePassword(@RequestBody UpdatePasswordRequest updatePasswordRequest,
-                                                                          @Login AuthInfo authInfo) {
+                                                               @Login AuthInfo authInfo) {
         memberService.updatePassword(authInfo, updatePasswordRequest);
         refreshTokenService.deleteToken(authInfo.getId());
         SimpleResultResponse resultResponse = new SimpleResultResponse(UPDATE_CODE_SUCCESS);
