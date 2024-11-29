@@ -11,13 +11,8 @@ import com.techeerlog.member.domain.Password;
 import com.techeerlog.member.dto.EditMemberRequest;
 import com.techeerlog.member.dto.ProfileResponse;
 import com.techeerlog.member.dto.SignupRequest;
-import com.techeerlog.member.dto.UniqueResponse;
 import com.techeerlog.member.dto.UpdatePasswordRequest;
-import com.techeerlog.member.exception.DuplicateNicknameException;
-import com.techeerlog.member.exception.IncorrectPasswordException;
-import com.techeerlog.member.exception.InvalidLoginIdException;
-import com.techeerlog.member.exception.PasswordConfirmationException;
-import com.techeerlog.member.exception.MemberNotFoundException;
+import com.techeerlog.member.exception.*;
 import com.techeerlog.member.repository.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,16 +75,6 @@ public class MemberService extends BaseEntity {
         // 비밀번호 업데이트
         member.updatePassword(Password.of(encryptor, newPassword));
         memberRepository.save(member);
-    }
-
-    public UniqueResponse checkUniqueLoginId(String loginId) {
-        boolean unique = !memberRepository.existsMemberByLoginIdValue(loginId);
-        return new UniqueResponse(unique);
-    }
-
-    public UniqueResponse checkUniqueNickname(String nickname) {
-        boolean unique = !memberRepository.existsMemberByNicknameValue(nickname);
-        return new UniqueResponse(unique);
     }
 
     private void validate(SignupRequest signupRequest) {

@@ -44,18 +44,6 @@ public class MemberController {
                 .body(resultResponse);
     }
 
-//    @GetMapping(value = "/signup/exists", params = "loginId")
-//    public ResponseEntity<UniqueResponse> validateUniqueLoginId(@RequestParam String loginId) {
-//        UniqueResponse uniqueResponse = memberService.checkUniqueLoginId(loginId);
-//        return ResponseEntity.ok(uniqueResponse);
-//    }
-//
-//    @GetMapping(value = "/signup/exists", params = "nickname")
-//    public ResponseEntity<UniqueResponse> validateUniqueNickname(@RequestParam String nickname) {
-//        UniqueResponse uniqueResponse = memberService.checkUniqueNickname(nickname);
-//        return ResponseEntity.ok(uniqueResponse);
-//    }
-
     @Operation(summary = "프로필 조회", description = "프로필 조회 기능")
     @GetMapping("/profile")
     public ResponseEntity<ResultResponse<ProfileResponse>> findProfile(@Login AuthInfo authInfo) {
@@ -65,7 +53,6 @@ public class MemberController {
         return ResponseEntity.status(FIND_PROFILE_SUCCESS.getStatus())
                 .body(resultResponse);
     }
-
 
     @Operation(summary = "프로필 수정", description = "프로필 수정 기능")
     @PatchMapping(consumes = "multipart/form-data")
