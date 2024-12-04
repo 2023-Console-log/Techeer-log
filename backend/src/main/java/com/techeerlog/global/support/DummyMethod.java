@@ -3,10 +3,7 @@ package com.techeerlog.global.support;
 import com.techeerlog.framework.domain.Framework;
 import com.techeerlog.framework.enums.FrameworkTypeEnum;
 import com.techeerlog.framework.repository.FrameworkRepository;
-import com.techeerlog.member.domain.LoginId;
 import com.techeerlog.member.domain.Member;
-import com.techeerlog.member.domain.Nickname;
-import com.techeerlog.member.domain.Password;
 import com.techeerlog.member.repository.MemberRepository;
 import com.techeerlog.project.domain.Project;
 import com.techeerlog.project.enums.*;
@@ -21,7 +18,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-@Profile({"dev","local"})
+@Profile({"dev", "local"})
 @Component
 public class DummyMethod {
 
@@ -52,10 +49,10 @@ public class DummyMethod {
 
     private void createMembers() {
         List<Member> members = Arrays.asList(
-                new Member(1L, new LoginId("test1"), new Password("1234"), new Nickname("test1"), "profileImageUrl1", "introduction1"),
-                new Member(2L, new LoginId("test2"), new Password("1234"), new Nickname("test2"), "profileImageUrl2", "introduction2"),
-                new Member(3L, new LoginId("test3"), new Password("1234"), new Nickname("test3"), "profileImageUrl3", "introduction3"),
-                new Member(4L, new LoginId("test4"), new Password("1234"), new Nickname("test4"), "profileImageUrl4", "introduction4")
+                new Member(1L, "test1", "1234", "test1", "profileImageUrl1", "introduction1"),
+                new Member(1L, "test2", "1234", "test2", "profileImageUrl2", "introduction2"),
+                new Member(1L, "test3", "1234", "test3", "profileImageUrl3", "introduction3"),
+                new Member(1L, "test4", "1234", "test4", "profileImageUrl4", "introduction4")
         );
         memberRepository.saveAll(members);
     }

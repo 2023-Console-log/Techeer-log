@@ -4,10 +4,7 @@ import com.techeerlog.auth.domain.encryptor.EncryptorI;
 import com.techeerlog.auth.dto.AuthInfo;
 import com.techeerlog.global.config.BaseEntity;
 import com.techeerlog.image.service.AmazonS3Service;
-import com.techeerlog.member.domain.LoginId;
 import com.techeerlog.member.domain.Member;
-import com.techeerlog.member.domain.Nickname;
-import com.techeerlog.member.domain.Password;
 import com.techeerlog.member.dto.request.EditMemberRequest;
 import com.techeerlog.member.dto.request.SignupRequest;
 import com.techeerlog.member.dto.request.UpdatePasswordRequest;
@@ -34,10 +31,10 @@ public class MemberServiceImpl extends BaseEntity implements MemberService {
         validate(signupRequest);
 
         Member member = Member.builder()
-                .loginId(new LoginId(signupRequest.getLoginId()))
-                .password(Password.of(encryptor, signupRequest.getPassword()))
+                .loginId(signupRequest.getLoginId())
+                .password(encryptPassword(signupRequest.getPassword()))
                 .profileImageUrl(DEFAULT_PROFILE_IMAGE_URL)
-                .nickname(new Nickname(signupRequest.getNickname()))
+                .nickname(signupRequest.getNickname())
                 .build();
         memberRepository.save(member);
         return member;
@@ -79,7 +76,7 @@ public class MemberServiceImpl extends BaseEntity implements MemberService {
 //        Password.validate(newPassword);
 
         // 비밀번호 업데이트
-        member.updatePassword(Password.of(encryptor, newPassword));
+        member.updatePassword(encryptPassword(newPassword));
         memberRepository.save(member);
     }
 
@@ -91,7 +88,7 @@ public class MemberServiceImpl extends BaseEntity implements MemberService {
 
     private void validateUniqueLoginId(SignupRequest signupRequest) {
         boolean isDuplicatedLoginId = memberRepository
-                .existsMemberByLoginIdValue(signupRequest.getLoginId());
+                .existsMemberByLoginId(signupRequest.getLoginId());
         if (isDuplicatedLoginId) {
             throw new InvalidLoginIdException();
         }
@@ -100,7 +97,7 @@ public class MemberServiceImpl extends BaseEntity implements MemberService {
     // else throw 넣어야 함
     private void validateUniqueNickname(SignupRequest signupRequest) {
         boolean isDuplicatedNickname = memberRepository
-                .existsMemberByNicknameValue(signupRequest.getNickname());
+                .existsMemberByNickname(signupRequest.getNickname());
         if (isDuplicatedNickname) {
             throw new DuplicateNicknameException();
         }
@@ -127,9 +124,8 @@ public class MemberServiceImpl extends BaseEntity implements MemberService {
 
     private void updateNickname(Member member, String newNickname) {
         if (newNickname != null && !newNickname.isEmpty() && !newNickname.equals(member.getNickname())) {
-            Nickname validNickname = new Nickname(newNickname);
-            validateUniqueNickname(validNickname);
-            member.updateNickname(validNickname);
+            validateUniqueNickname(newNickname);
+            member.updateNickname(newNickname);
         }
     }
 
@@ -139,9 +135,13 @@ public class MemberServiceImpl extends BaseEntity implements MemberService {
         }
     }
 
-    private void validateUniqueNickname(Nickname validNickname) {
+    private void validateUniqueNickname(String validNickname) {
         if (memberRepository.existsMemberByNickname(validNickname)) {
             throw new DuplicateNicknameException();
         }
+    }
+
+    private String encryptPassword(String password) {
+        return encryptor.encrypt(password);
     }
 }

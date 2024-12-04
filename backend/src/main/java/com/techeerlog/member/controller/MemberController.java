@@ -34,8 +34,8 @@ public class MemberController {
     @Operation(summary = "회원가입", description = "회원가입 기능")
     @PostMapping(value = "/signup")
     public ResponseEntity<ResultResponse<MemberResponse>> signUp(@RequestBody SignupRequest signupRequest) {
-        Member memberResponse = memberServiceImpl.signUp(signupRequest);
-        ResultResponse<MemberResponse> resultResponse = new ResultResponse<>(SIGNUP_SUCCESS, memberMapper.memberToMemberResponse(memberResponse));
+        Member member = memberServiceImpl.signUp(signupRequest);
+        ResultResponse<MemberResponse> resultResponse = new ResultResponse<>(SIGNUP_SUCCESS, memberMapper.memberToMemberResponse(member));
 
         return ResponseEntity.status(SIGNUP_SUCCESS.getStatus())
                 .body(resultResponse);
