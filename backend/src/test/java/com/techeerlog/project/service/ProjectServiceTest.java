@@ -9,10 +9,7 @@ import com.techeerlog.global.mapper.ProjectMapper;
 import com.techeerlog.global.support.UtilMethod;
 import com.techeerlog.love.domain.Love;
 import com.techeerlog.love.repository.LoveRepository;
-import com.techeerlog.member.domain.LoginId;
 import com.techeerlog.member.domain.Member;
-import com.techeerlog.member.domain.Nickname;
-import com.techeerlog.member.domain.Password;
 import com.techeerlog.member.exception.MemberNotFoundException;
 import com.techeerlog.member.repository.MemberRepository;
 import com.techeerlog.project.domain.Project;
@@ -27,16 +24,17 @@ import com.techeerlog.project.repository.ProjectMemberRepository;
 import com.techeerlog.project.repository.ProjectRepository;
 import com.techeerlog.scrap.domain.Scrap;
 import com.techeerlog.scrap.repository.ScrapRepository;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.awt.print.PrinterJob;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,6 +47,12 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class ProjectServiceTest {
+    @Spy
+    private final ProjectMapper projectMapper = Mappers.getMapper(ProjectMapper.class);
+    @Spy
+    private final MemberMapper memberMapper = Mappers.getMapper(MemberMapper.class);
+    @Spy
+    private final FrameworkMapper frameworkMapper = Mappers.getMapper(FrameworkMapper.class);
     @Mock
     private ProjectRepository projectRepository;
     @Mock
@@ -67,12 +71,6 @@ public class ProjectServiceTest {
     private LoveRepository loveRepository;
     @Mock
     private ScrapRepository scrapRepository;
-    @Spy
-    private final ProjectMapper projectMapper = Mappers.getMapper(ProjectMapper.class);
-    @Spy
-    private final MemberMapper memberMapper = Mappers.getMapper(MemberMapper.class);
-    @Spy
-    private final FrameworkMapper frameworkMapper = Mappers.getMapper(FrameworkMapper.class);
     @InjectMocks
     private ProjectService projectService;
 
@@ -129,9 +127,9 @@ public class ProjectServiceTest {
             return Member.builder()
                     .id(memberId)
                     .introduction("instruction" + memberId)
-                    .loginId(new LoginId("test" + memberId))
-                    .nickname(new Nickname("test" + memberId))
-                    .password(new Password("1234"))
+                    .loginId("test" + memberId)
+                    .nickname("test" + memberId)
+                    .password("1234")
                     .profileImageUrl("profileImageUrl" + memberId)
                     .build();
         }
@@ -228,7 +226,9 @@ public class ProjectServiceTest {
 
             // when, then
             assertThrows(ProjectNotFoundException.class,
-                    () -> {projectService.addProject(projectRequest, authInfo);});
+                    () -> {
+                        projectService.addProject(projectRequest, authInfo);
+                    });
         }
 
         private AuthInfo createAuthInfo(Long id) {
@@ -239,21 +239,21 @@ public class ProjectServiceTest {
             return Member.builder()
                     .id(memberId)
                     .introduction("instruction" + memberId)
-                    .loginId(new LoginId("test" + memberId))
-                    .nickname(new Nickname("test" + memberId))
-                    .password(new Password("1234"))
+                    .loginId("test" + memberId)
+                    .nickname("test" + memberId)
+                    .password("1234")
                     .profileImageUrl("profileImageUrl" + memberId)
                     .build();
         }
 
-        private ProjectMemberRequest createProjectMemberRequest(Long memberId){
+        private ProjectMemberRequest createProjectMemberRequest(Long memberId) {
             return ProjectMemberRequest.builder()
                     .memberId(memberId)
                     .projectMemberTypeEnum(ProjectMemberTypeEnum.BACKEND)
                     .build();
         }
 
-        private List<ProjectMemberRequest> createProjectMemberRequestList(){
+        private List<ProjectMemberRequest> createProjectMemberRequestList() {
             List<ProjectMemberRequest> projectMemberRequestList = new ArrayList<>();
             for (long memberId = 1; memberId <= 5; memberId++) {
                 projectMemberRequestList.add(createProjectMemberRequest(memberId));
@@ -283,6 +283,7 @@ public class ProjectServiceTest {
                     .nonRegisterProjectMemberRequestList(Collections.emptyList())
                     .build();
         }
+
         private ProjectRequest createProjectRequest(Long projectId, List<ProjectMemberRequest> projectMemberRequestList) {
             return ProjectRequest.builder()
                     .title("title" + projectId)
@@ -377,7 +378,9 @@ public class ProjectServiceTest {
 
             // when, then
             assertThrows(ProjectNotFoundException.class,
-                    () -> {projectService.updateProject(id, projectRequest, authInfo);});
+                    () -> {
+                        projectService.updateProject(id, projectRequest, authInfo);
+                    });
         }
 
         @Test
@@ -395,7 +398,9 @@ public class ProjectServiceTest {
 
             // when, then
             assertThrows(AuthorizationException.class,
-                    () -> {projectService.updateProject(id, projectRequest, authInfo);});
+                    () -> {
+                        projectService.updateProject(id, projectRequest, authInfo);
+                    });
         }
 
         private AuthInfo createAuthInfo(Long id) {
@@ -406,9 +411,9 @@ public class ProjectServiceTest {
             return Member.builder()
                     .id(memberId)
                     .introduction("instruction" + memberId)
-                    .loginId(new LoginId("test" + memberId))
-                    .nickname(new Nickname("test" + memberId))
-                    .password(new Password("1234"))
+                    .loginId("test" + memberId)
+                    .nickname("test" + memberId)
+                    .password("1234")
                     .profileImageUrl("profileImageUrl" + memberId)
                     .build();
         }
@@ -497,7 +502,9 @@ public class ProjectServiceTest {
 
             // when, then
             assertThrows(ProjectNotFoundException.class,
-                    () -> {projectService.deleteProject(projectId, authInfo);});
+                    () -> {
+                        projectService.deleteProject(projectId, authInfo);
+                    });
         }
 
         @Test
@@ -514,7 +521,9 @@ public class ProjectServiceTest {
 
             // when, then
             assertThrows(AuthorizationException.class,
-                    () -> {projectService.deleteProject(projectId, authInfo);});
+                    () -> {
+                        projectService.deleteProject(projectId, authInfo);
+                    });
         }
 
         private AuthInfo createAuthInfo(Long id) {
@@ -525,9 +534,9 @@ public class ProjectServiceTest {
             return Member.builder()
                     .id(memberId)
                     .introduction("instruction" + memberId)
-                    .loginId(new LoginId("test" + memberId))
-                    .nickname(new Nickname("test" + memberId))
-                    .password(new Password("1234"))
+                    .loginId("test" + memberId)
+                    .nickname("test" + memberId)
+                    .password("1234")
                     .profileImageUrl("profileImageUrl" + memberId)
                     .build();
         }

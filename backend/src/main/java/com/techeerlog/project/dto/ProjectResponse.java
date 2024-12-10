@@ -1,7 +1,7 @@
 package com.techeerlog.project.dto;
 
 import com.techeerlog.framework.dto.FrameworkResponse;
-import com.techeerlog.member.dto.MemberResponse;
+import com.techeerlog.member.dto.response.MemberResponse;
 import com.techeerlog.project.enums.*;
 import lombok.*;
 
