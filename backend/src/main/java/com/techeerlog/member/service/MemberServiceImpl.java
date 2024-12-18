@@ -19,7 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 @Transactional
 @RequiredArgsConstructor
-public class MemberServiceImpl extends BaseEntity implements MemberService {
+public class MemberServiceImpl implements MemberService {
 
     private static final String DEFAULT_PROFILE_IMAGE_URL = "https://techeer-bucket.s3.ap-northeast-2.amazonaws.com/image+(3).png";
     private final MemberRepository memberRepository;
