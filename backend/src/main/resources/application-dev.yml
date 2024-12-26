@@ -59,7 +59,11 @@ cloud:
     region:
       static: ${COMMON.S3.REGION}
 
-
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
 
 
 #logging:
