@@ -49,10 +49,10 @@ public class DummyMethod {
 
     private void createMembers() {
         List<Member> members = Arrays.asList(
-                new Member(1L, "test1", "1234", "test1", "profileImageUrl1", "introduction1"),
-                new Member(1L, "test2", "1234", "test2", "profileImageUrl2", "introduction2"),
-                new Member(1L, "test3", "1234", "test3", "profileImageUrl3", "introduction3"),
-                new Member(1L, "test4", "1234", "test4", "profileImageUrl4", "introduction4")
+                new Member("test1", "1234", "test1", "profileImageUrl1", "introduction1"),
+                new Member("test2", "1234", "test2", "profileImageUrl2", "introduction2"),
+                new Member("test3", "1234", "test3", "profileImageUrl3", "introduction3"),
+                new Member("test4", "1234", "test4", "profileImageUrl4", "introduction4")
         );
         memberRepository.saveAll(members);
     }
