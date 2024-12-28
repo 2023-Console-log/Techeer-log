@@ -2,7 +2,6 @@ package com.techeerlog.member.service;
 
 import com.techeerlog.auth.domain.encryptor.EncryptorI;
 import com.techeerlog.auth.dto.AuthInfo;
-import com.techeerlog.global.config.BaseEntity;
 import com.techeerlog.image.service.AmazonS3Service;
 import com.techeerlog.member.domain.Member;
 import com.techeerlog.member.dto.request.EditMemberRequest;
@@ -32,7 +31,7 @@ public class MemberServiceImpl implements MemberService {
 
         Member member = Member.builder()
                 .loginId(signupRequest.getLoginId())
-                .password(encryptPassword(signupRequest.getPassword()))
+                .password(encryptor.encrypt((signupRequest.getPassword())))
                 .profileImageUrl(DEFAULT_PROFILE_IMAGE_URL)
                 .nickname(signupRequest.getNickname())
                 .build();
@@ -76,7 +75,7 @@ public class MemberServiceImpl implements MemberService {
 //        Password.validate(newPassword);
 
         // 비밀번호 업데이트
-        member.updatePassword(encryptPassword(newPassword));
+        member.updatePassword(encryptor.encrypt(newPassword));
         memberRepository.save(member);
     }
 
@@ -141,7 +140,5 @@ public class MemberServiceImpl implements MemberService {
         }
     }
 
-    private String encryptPassword(String password) {
-        return encryptor.encrypt(password);
-    }
+
 }
